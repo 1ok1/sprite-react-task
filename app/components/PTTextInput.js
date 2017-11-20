@@ -18,7 +18,7 @@ export default class PTTextInput extends Component {
           <TextInput style = {styles.input}
                 underlineColorAndroid = "transparent"
                 placeholder = {this.props.placeHolder}
-                placeholderTextColor = "#FFFFFF"
+                placeholderTextColor = "#F2F3F4"
                 autoCapitalize = "none"
                 onChangeText={(text) => this.setState({text})}
                 value={this.state.text}/>
@@ -35,6 +35,7 @@ const styles = StyleSheet.create({
     input: {
        padding : 10,
        height: 40,
+       color : 'white',
        borderColor: '#3E3E3E',
        borderWidth: 1,
     }

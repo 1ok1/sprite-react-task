@@ -27,6 +27,7 @@ const instructions = Platform.select({
 });
 
 export default class App extends Component {
+  
   render() {
     return (
       <ScrollView style={styles.contentContainer} >
@@ -34,20 +35,19 @@ export default class App extends Component {
           <View style = {styles.logo}>
             <Image source={require('./images/logo-2.png')}/>
           </View>
-          <PTTextInput placeHolder="Enter Customer Name"/>
-          <PTTextInput placeHolder="Enter Invoice Number"/>
-          <PTTextInput placeHolder="Enter Delivery Address"/>
+          <PTTextInput placeHolder="Enter Customer Name" ref="name"/>
+          <PTTextInput placeHolder="Enter Invoice Number" ref="inv_num"/>
+          <PTTextInput placeHolder="Enter Delivery Address" ref="address"/>
           <MyDatePicker value = {new Date()}/>
-          <PTTextInput placeHolder="Enter Product ID"/>
-          <PTTextInput placeHolder="Enter Product Amount"/>
-          <PTTextInput placeHolder="Select Payment Type"/>
+          <PTTextInput placeHolder="Enter Product ID" ref="product_id"/>
+          <PTTextInput placeHolder="Enter Product Amount" ref="amount"/>
           <View style={styles.horizontal}>
             <RadioButton text="COD" isSelected = {true}/>
             <RadioButton text="Cash Payment" isSelected = {false}/>
           </View>
           <TouchableHighlight
             style={styles.addProductBtn}
-            onPress={() => this.addProduct()}>
+            onPress={() => this._placeOrder()}>
               <Text style={styles.addProduct}>
                 ADD PRODUCT
               </Text>
@@ -57,16 +57,36 @@ export default class App extends Component {
     );
   }
 
-  addProduct() {
-    let formdata = new FormData();
-    formdata.append("customer_name", 'vignesh')
-    formdata.append("invoice_number", 10)
-    formdata.append("delivery_address", "Mugalivakkam")
-    formdata.append("delivery_date", '20/08/2017')
-    formdata.append("products[id]", 1)
-    formdata.append("products[amount]", 2000)
-    formdata.append("payment", "COD")
-    fetchApi(formdata)
+  _placeOrder() {
+    var validation = this._validateForm() 
+    if (validation === "") {
+      let formdata = new FormData();
+      formdata.append("customer_name", this.refs.name.state.text)
+      formdata.append("invoice_number", this.refs.inv_num.state.text)
+      formdata.append("delivery_address", this.refs.address.state.text)
+      formdata.append("delivery_date", '20/08/2017')
+      formdata.append("products[id]", this.refs.product_id.state.text)
+      formdata.append("products[amount]", this.refs.amount.state.text)
+      formdata.append("payment", "COD")
+      this.fetchApi(formdata)
+    } else {
+      this.showAlert(validation)
+    }
+  }
+
+
+  _validateForm(){
+    if (this.refs.name.state.text === "") {
+      return "Please enter user name"
+    } else if (this.refs.inv_num.state.text === "") {
+      return "Please enter Invoice number"
+    } else if (this.refs.address.state.text === "") {
+      return "Please enter address"
+    } else if (this.refs.product_id.state.text === "") {
+      return "Please enter product Id"
+    } else if (this.refs.amount.state.text === "") {
+      return "Please enter amount"
+    }
   }
 
   fetchApi(formdata){
