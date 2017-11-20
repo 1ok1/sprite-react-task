@@ -66,25 +66,28 @@ export default class App extends Component {
     formdata.append("products[id]", 1)
     formdata.append("products[amount]", 2000)
     formdata.append("payment", "COD")
-    
-    
+    fetchApi(formdata)
+  }
+
+  fetchApi(formdata){
     fetch('https://api-coding-spritle.herokuapp.com/api/orders/add',{
       method: 'post',
       headers: {
         'Content-Type': 'multipart/form-data',
       },
       body: formdata
-    }).then(response => {    
+    })
+    .then(response => {    
         console.log(response)
         if (response.status == 200) {
-          this.showAlert(response.json)
+          this.showAlert(response._bodyText)
         } else {
-          this.showAlert(response)
+          this.showAlert(response._bodyText)
         }
     }).catch(err => {
         this.showAlert(err)
         console.log(err)
-    });  
+    });
   }
   
   showAlert(message){
