@@ -17,14 +17,14 @@ import {
 } from 'react-native';
 import PTTextInput from './components/PTTextInput'; 
 import MyDatePicker from './components/MyDatePicker';
-import RadioButton from './components/RadioButton';
+// import RadioButton from './components/RadioButton';
+import RadioForm, {RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-native-simple-radio-button';
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' +
-    'Cmd+D or shake for dev menu',
-  android: 'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
+var radio_props = [
+  {label: 'COD', value: 0 },
+  {label: 'Cash', value: 1 }
+];
+ 
 
 export default class App extends Component {
   
@@ -38,13 +38,22 @@ export default class App extends Component {
           <PTTextInput placeHolder="Enter Customer Name" ref="name"/>
           <PTTextInput placeHolder="Enter Invoice Number" ref="inv_num"/>
           <PTTextInput placeHolder="Enter Delivery Address" ref="address"/>
-          <MyDatePicker value = {new Date()}/>
+          <MyDatePicker value = {new Date()} ref="date"/>
           <PTTextInput placeHolder="Enter Product ID" ref="product_id"/>
           <PTTextInput placeHolder="Enter Product Amount" ref="amount"/>
-          <View style={styles.horizontal}>
-            <RadioButton text="COD" isSelected = {true}/>
-            <RadioButton text="Cash Payment" isSelected = {false}/>
-          </View>
+          <RadioForm style={styles.radioBtn}
+            radio_props={radio_props}
+            initial={0}
+            formHorizontal={true}
+            labelHorizontal={true}
+            buttonColor={'#FF2967'}
+            selectedButtonColor={'#FF2967'}
+            labelColor={'#FFFFFF'}
+            radioStyle= {styles.radioBtn}
+            selectedLabelColor={'#FFFFFF'}
+            animation={true}
+            onPress={(value) => {this.setState({value:value})}}
+          />
           <TouchableHighlight
             style={styles.addProductBtn}
             onPress={() => this._placeOrder()}>
@@ -57,6 +66,16 @@ export default class App extends Component {
     );
   }
 
+  _setRadioBtn(selectedButton){
+      if (selectedButton === "cod"){
+        this.refs.cod.state.isSelected = true
+        this.refs.cash.state.isSelected = false
+      } else {
+        this.refs.cod.state.isSelected = false
+        this.refs.cash.state.isSelected = true  
+      }
+  }
+
   _placeOrder() {
     var validation = this._validateForm() 
     if (validation === "") {
@@ -64,13 +83,13 @@ export default class App extends Component {
       formdata.append("customer_name", this.refs.name.state.text)
       formdata.append("invoice_number", this.refs.inv_num.state.text)
       formdata.append("delivery_address", this.refs.address.state.text)
-      formdata.append("delivery_date", '20/08/2017')
+      formdata.append("delivery_date",  this.refs.date.state.date)
       formdata.append("products[id]", this.refs.product_id.state.text)
       formdata.append("products[amount]", this.refs.amount.state.text)
       formdata.append("payment", "COD")
-      this.fetchApi(formdata)
+      this._fetchApi(formdata)
     } else {
-      this.showAlert(validation)
+      this._showAlert(validation)
     }
   }
 
@@ -89,7 +108,7 @@ export default class App extends Component {
     }
   }
 
-  fetchApi(formdata){
+  _fetchApi(formdata){
     fetch('https://api-coding-spritle.herokuapp.com/api/orders/add',{
       method: 'post',
       headers: {
@@ -100,17 +119,17 @@ export default class App extends Component {
     .then(response => {    
         console.log(response)
         if (response.status == 200) {
-          this.showAlert(response._bodyText)
+          this._showAlert(response._bodyText)
         } else {
-          this.showAlert(response._bodyText)
+          this._showAlert(response._bodyText)
         }
     }).catch(err => {
-        this.showAlert(err)
+        this._showAlert(err)
         console.log(err)
     });
   }
   
-  showAlert(message){
+  _showAlert(message){
     Alert.alert(
       'Alert',
       message,
@@ -125,6 +144,9 @@ const styles = StyleSheet.create({
   contentContainer: {
     paddingVertical: 20,
     backgroundColor : '#212121',
+  },
+  radioBtn : {
+    margin : 8
   },
   logo : {
     alignItems: 'center',
