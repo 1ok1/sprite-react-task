@@ -53,6 +53,7 @@ export default class App extends Component {
             selectedLabelColor={'#FFFFFF'}
             animation={true}
             onPress={(value) => {this.setState({value:value})}}
+            ref="radio_group"
           />
           <TouchableHighlight
             style={styles.addProductBtn}
@@ -78,7 +79,9 @@ export default class App extends Component {
 
   _placeOrder() {
     var validation = this._validateForm() 
-    if (validation === "") {
+    if (validation) {
+      this._showAlert(validation)
+    } else {
       let formdata = new FormData();
       formdata.append("customer_name", this.refs.name.state.text)
       formdata.append("invoice_number", this.refs.inv_num.state.text)
@@ -86,10 +89,8 @@ export default class App extends Component {
       formdata.append("delivery_date",  this.refs.date.state.date)
       formdata.append("products[id]", this.refs.product_id.state.text)
       formdata.append("products[amount]", this.refs.amount.state.text)
-      formdata.append("payment", "COD")
+      formdata.append("payment", this.refs.radio_group.state.is_active_index == 0 ? "COD" : "Cash")
       this._fetchApi(formdata)
-    } else {
-      this._showAlert(validation)
     }
   }
 
