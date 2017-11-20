@@ -21,6 +21,7 @@ export default class PTTextInput extends Component {
                 placeholderTextColor = "#F2F3F4"
                 autoCapitalize = "none"
                 onChangeText={(text) => this.setState({text})}
+                keyboardType={this.props.keyboardType}
                 value={this.state.text}/>
         </View>
       );

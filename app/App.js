@@ -35,12 +35,12 @@ export default class App extends Component {
           <View style = {styles.logo}>
             <Image source={require('./images/logo-2.png')}/>
           </View>
-          <PTTextInput placeHolder="Enter Customer Name" ref="name"/>
-          <PTTextInput placeHolder="Enter Invoice Number" ref="inv_num"/>
+          <PTTextInput placeHolder="Enter Customer Name" ref="name" />
+          <PTTextInput placeHolder="Enter Invoice Number" ref="inv_num" keyboardType="numeric"/>
           <PTTextInput placeHolder="Enter Delivery Address" ref="address"/>
           <MyDatePicker value = {new Date()} ref="date"/>
-          <PTTextInput placeHolder="Enter Product ID" ref="product_id"/>
-          <PTTextInput placeHolder="Enter Product Amount" ref="amount"/>
+          <PTTextInput placeHolder="Enter Product ID" ref="product_id" keyboardType="numeric"/>
+          <PTTextInput placeHolder="Enter Product Amount" ref="amount" keyboardType="numeric"/>
           <RadioForm style={styles.radioBtn}
             radio_props={radio_props}
             initial={0}
